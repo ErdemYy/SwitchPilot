@@ -1,3 +1,10 @@
 packages:
   - 'apps/*'
   - 'packages/*'
+
+allowBuilds:
+  better-sqlite3: false
+  electron: false
+  esbuild: false
+  keytar: false
+  sharp: false
