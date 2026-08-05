@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
+import React from 'react';
 import { AppShell } from '../../../layouts/AppShell';
 
 export default function RoleManagementPage() {

@@ -5,9 +5,9 @@ import { AppShell } from '../../layouts/AppShell';
 import { Card, Button, Badge } from '@switchpilot/ui';
 
 export default function DeploymentDashboardPage() {
-  const [deploymentModel, setDeploymentModel] = useState<string>('HIGH_AVAILABILITY');
-  const [preflightStatus, setPreflightStatus] = useState<string>('READY');
-  const [airgappedPackage, setAirgappedPackage] = useState<string>('switchpilot-v1.0.0-airgapped.spairgapped');
+  const [deploymentModel] = useState<string>('HIGH_AVAILABILITY');
+  const [preflightStatus] = useState<string>('READY');
+  const [airgappedPackage] = useState<string>('switchpilot-v1.0.0-airgapped.spairgapped');
 
   const preflightChecks = [
     { item: 'CPU Cores', required: '8 Cores', actual: '16 Cores', status: 'PASSED' },

@@ -1,11 +1,10 @@
 'use client';
 
-import React, { useState } from 'react';
+import React from 'react';
 import { AppShell } from '../../../layouts/AppShell';
-import { Card, Button, Badge } from '@switchpilot/ui';
+import { Card, Badge } from '@switchpilot/ui';
 
 export default function ApiExplorerPage() {
-  const [selectedTag, setSelectedTag] = useState<string>('ALL');
 
   const apiEndpoints = [
     { method: 'POST', path: '/api/v1/auth/login', tag: 'Identity', summary: 'Authenticate user & issue JWT tokens' },
@@ -42,7 +41,7 @@ export default function ApiExplorerPage() {
                     </span>
                     <span className="font-mono text-slate-200 font-bold text-sm">{ep.path}</span>
                   </div>
-                  <Badge variant="secondary" size="sm">{ep.tag}</Badge>
+                  <Badge variant="info">{ep.tag}</Badge>
                 </div>
                 <p className="text-slate-400 text-[11px]">{ep.summary}</p>
               </div>

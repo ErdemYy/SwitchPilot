@@ -2,7 +2,7 @@
 
 import React, { useState } from 'react';
 import { AppShell } from '../../layouts/AppShell';
-import { Card, Button, StatusChip, Badge } from '@switchpilot/ui';
+import { Card, Button, Badge } from '@switchpilot/ui';
 
 export default function ExecutionConsolePage() {
   const [selectedPlanId, setSelectedPlanId] = useState<string>('exec-801');

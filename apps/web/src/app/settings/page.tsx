@@ -8,7 +8,7 @@ export default function SettingsPage() {
   const [activeTab, setActiveTab] = useState<string>('GENERAL');
   const [releaseChannel, setReleaseChannel] = useState<string>('STABLE');
   const [appLockMinutes, setAppLockMinutes] = useState<number>(15);
-  const [telemetryEnabled, setTelemetryEnabled] = useState<boolean>(true);
+
 
   const tabs = [
     { id: 'GENERAL', label: 'General' },

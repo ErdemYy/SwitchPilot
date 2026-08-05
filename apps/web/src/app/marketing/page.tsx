@@ -4,7 +4,7 @@ import React from 'react';
 import { Hero } from '../../components/marketing/hero/Hero';
 import { MarketingFooter } from '../../components/marketing/MarketingFooter';
 import { CookieBanner } from '../../components/marketing/CookieBanner';
-import { Card, Button, Badge } from '@switchpilot/ui';
+import { Button, Badge } from '@switchpilot/ui';
 import Link from 'next/link';
 
 export default function MarketingLandingPage() {

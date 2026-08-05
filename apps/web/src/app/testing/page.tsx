@@ -1,11 +1,11 @@
 'use client';
 
-import React, { useState } from 'react';
+import React from 'react';
 import { AppShell } from '../../layouts/AppShell';
 import { Card, Button, Badge } from '@switchpilot/ui';
 
 export default function TestingDashboardPage() {
-  const [selectedSuite, setSelectedSuite] = useState<string>('ALL');
+
 
   const coverageMetrics = {
     totalCoveragePct: 96.4,

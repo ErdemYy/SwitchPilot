@@ -2,7 +2,7 @@
 
 import React from 'react';
 import { AppShell } from '../../../layouts/AppShell';
-import { Card, Badge } from '@switchpilot/ui';
+import { Card } from '@switchpilot/ui';
 
 export default function DeveloperPortalPage() {
   return (

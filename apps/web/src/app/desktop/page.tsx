@@ -5,7 +5,7 @@ import { AppShell } from '../../layouts/AppShell';
 import { Card, Button, Badge } from '@switchpilot/ui';
 
 export default function DesktopDashboardPage() {
-  const [isOffline, setIsOffline] = useState<boolean>(false);
+  const [isOffline] = useState<boolean>(false);
   const [syncStatus, setSyncStatus] = useState<string>('IDLE');
   const [queuedChangesCount, setQueuedChangesCount] = useState<number>(3);
 

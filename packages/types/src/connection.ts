@@ -1,14 +1,5 @@
-export enum ConnectionProtocol {
-  SSH = 'SSH',
-  TELNET = 'TELNET',
-  NETCONF = 'NETCONF',
-  RESTCONF = 'RESTCONF',
-  SNMP_V2C = 'SNMP_V2C',
-  SNMP_V3 = 'SNMP_V3',
-  HTTPS_API = 'HTTPS_API',
-  HTTP_API = 'HTTP_API',
-  GRPC = 'GRPC',
-}
+import { ConnectionProtocol } from './vendor';
+export { ConnectionProtocol };
 
 export enum ConnectionErrorType {
   AUTH_FAILED = 'AUTH_FAILED',

@@ -3,7 +3,7 @@
 import React from 'react';
 import { MarketingNavbar } from '../../components/marketing/hero/MarketingNavbar';
 import { MarketingFooter } from '../../components/marketing/MarketingFooter';
-import { Card, Button, Badge } from '@switchpilot/ui';
+import { Button, Badge } from '@switchpilot/ui';
 
 export default function DownloadCenterPage() {
   const downloads = [

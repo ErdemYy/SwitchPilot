@@ -8,7 +8,6 @@ export default function SecuritySettingsPage() {
   const [requireUppercase, setRequireUppercase] = useState(true);
   const [requireNumbers, setRequireNumbers] = useState(true);
   const [requireSpecialChars, setRequireSpecialChars] = useState(true);
-  const [sessionMaxDurationMin, setSessionMaxDurationMin] = useState(1440);
   const [idleTimeoutMin, setIdleTimeoutMin] = useState(60);
   const [enforceMfa, setEnforceMfa] = useState(false);
 

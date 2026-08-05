@@ -7,7 +7,7 @@ import { Card, Button, StatusChip } from '@switchpilot/ui';
 
 export default function ConnectionsPage() {
   const [isTestModalOpen, setIsTestModalOpen] = useState(false);
-  const [selectedHost, setSelectedHost] = useState('10.240.1.1');
+  const [selectedHost] = useState('10.240.1.1');
   const [selectedProtocol, setSelectedProtocol] = useState('SSH');
 
   const protocols = [
@@ -143,7 +143,7 @@ export default function ConnectionsPage() {
                 <div>
                   <span className="font-bold text-slate-100">{b.name}</span>
                   <span className="block text-[10px] font-mono text-slate-400">
-                    {b.username}@{b.ip}:{b.port}
+                    root@{b.ip}:{b.port}
                   </span>
                 </div>
                 <div className="flex items-center space-x-3">

@@ -3,7 +3,7 @@
 import React, { useState } from 'react';
 import Link from 'next/link';
 import { AppShell } from '../../layouts/AppShell';
-import { Card, Button, Badge } from '@switchpilot/ui';
+
 
 export default function DocsPortalPage() {
   const [searchQuery, setSearchQuery] = useState<string>('');
