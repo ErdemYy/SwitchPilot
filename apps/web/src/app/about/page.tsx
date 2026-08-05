@@ -14,7 +14,7 @@ export default function AboutPage() {
 
       <div className="py-16 px-6 max-w-4xl mx-auto space-y-8">
         <div className="text-center space-y-3">
-          <Badge variant="primary" size="sm">ABOUT SWITCHPILOT</Badge>
+          <Badge variant="info" size="sm">ABOUT SWITCHPILOT</Badge>
           <h1 className="text-3xl md:text-5xl font-bold tracking-tight text-slate-900">
             Autonomous Multi-Vendor Network Engineering
           </h1>

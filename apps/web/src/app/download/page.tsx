@@ -47,7 +47,7 @@ export default function DownloadCenterPage() {
 
       <div className="py-16 px-6 max-w-[1536px] mx-auto space-y-10">
         <div className="text-center max-w-3xl mx-auto space-y-3">
-          <Badge variant="primary" size="sm">OFFICIAL DOWNLOAD CENTER</Badge>
+          <Badge variant="info" size="sm">OFFICIAL DOWNLOAD CENTER</Badge>
           <h1 className="text-3xl md:text-5xl font-bold tracking-tight text-slate-900">
             Download SwitchPilot Desktop App
           </h1>

@@ -25,7 +25,7 @@ export default function MarketingLandingPage() {
       {/* Feature Showcase Grid */}
       <section className="py-20 px-6 max-w-[1536px] mx-auto space-y-12">
         <div className="text-center max-w-3xl mx-auto space-y-3">
-          <Badge variant="primary" size="sm">ENTERPRISE PLATFORM CAPABILITIES</Badge>
+          <Badge variant="info" size="sm">ENTERPRISE PLATFORM CAPABILITIES</Badge>
           <h2 className="text-3xl md:text-5xl font-bold tracking-tight text-[#1E293B]">
             Engineered for Modern Enterprise NOCs
           </h2>
