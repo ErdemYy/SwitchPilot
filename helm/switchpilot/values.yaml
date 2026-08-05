@@ -1,0 +1,60 @@
+# SwitchPilot Enterprise Production Helm Values
+
+global:
+  environment: production
+  domainName: switchpilot.io
+
+replicaCount: 3
+
+image:
+  apiRepository: switchpilot/api
+  webRepository: switchpilot/web
+  tag: "1.0.0"
+  pullPolicy: IfNotPresent
+
+resources:
+  api:
+    requests:
+      cpu: "500m"
+      memory: "512Mi"
+    limits:
+      cpu: "2000m"
+      memory: "2Gi"
+  web:
+    requests:
+      cpu: "250m"
+      memory: "256Mi"
+    limits:
+      cpu: "1000m"
+      memory: "1Gi"
+
+autoscaling:
+  enabled: true
+  minReplicas: 3
+  maxReplicas: 10
+  targetCPUUtilizationPercentage: 75
+  targetMemoryUtilizationPercentage: 80
+
+podDisruptionBudget:
+  enabled: true
+  minAvailable: 2
+
+probes:
+  liveness:
+    path: /api/v1/health/liveness
+    initialDelaySeconds: 15
+    periodSeconds: 10
+  readiness:
+    path: /api/v1/health/readiness
+    initialDelaySeconds: 5
+    periodSeconds: 5
+
+networkPolicy:
+  enabled: true
+  allowExternalIngress: true
+
+securityContext:
+  runAsNonRoot: true
+  runAsUser: 10001
+  readOnlyRootFilesystem: true
+  allowPrivilegeEscalation: false

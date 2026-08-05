@@ -1,0 +1,39 @@
+{
+  "name": "switchpilot-monorepo",
+  "version": "1.0.0",
+  "private": true,
+  "description": "SwitchPilot - Multi-Vendor Network Automation Enterprise Platform",
+  "author": "SwitchPilot Core Architecture Team",
+  "license": "UNLICENSED",
+  "scripts": {
+    "dev": "pnpm --filter @switchpilot/web dev",
+    "dev:all": "pnpm --parallel dev",
+    "build": "pnpm --filter \"./apps/*\" --filter \"./packages/*\" build",
+    "lint": "pnpm --recursive lint",
+    "format": "prettier --write \"**/*.{ts,tsx,js,jsx,json,md,css,scss}\"",
+    "format:check": "prettier --check \"**/*.{ts,tsx,js,jsx,json,md,css,scss}\"",
+    "typecheck": "pnpm --recursive typecheck",
+    "prepare": "husky install"
+  },
+  "devDependencies": {
+    "@commitlint/cli": "^19.3.0",
+    "@commitlint/config-conventional": "^19.2.2",
+    "husky": "^9.0.11",
+    "lint-staged": "^15.2.5",
+    "prettier": "^3.3.0",
+    "typescript": "^5.4.5"
+  },
+  "lint-staged": {
+    "*.{js,jsx,ts,tsx}": [
+      "eslint --fix",
+      "prettier --write"
+    ],
+    "*.{json,md,yml,yaml,css}": [
+      "prettier --write"
+    ]
+  },
+  "engines": {
+    "node": ">=20.0.0",
+    "pnpm": ">=9.0.0"
+  }
+}

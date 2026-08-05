@@ -1,0 +1,67 @@
+version: '3.8'
+
+services:
+  postgres:
+    image: timescale/timescaledb:latest-pg16
+    container_name: switchpilot-db
+    restart: always
+    environment:
+      POSTGRES_DB: switchpilot
+      POSTGRES_USER: switchpilot_admin
+      POSTGRES_PASSWORD: ${DB_PASSWORD:-SecureP@ssw0rd2026!}
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U switchpilot_admin -d switchpilot"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  redis:
+    image: redis:7.2-alpine
+    container_name: switchpilot-redis
+    restart: always
+    command: redis-server --requirepass ${REDIS_PASSWORD:-SecureRedis2026!}
+    ports:
+      - "6379:6379"
+    volumes:
+      - redisdata:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  vault:
+    image: hashicorp/vault:1.16.0
+    container_name: switchpilot-vault
+    restart: always
+    environment:
+      VAULT_DEV_ROOT_TOKEN_ID: ${VAULT_TOKEN:-root}
+    ports:
+      - "8200:8200"
+
+  api:
+    build:
+      context: ..
+      dockerfile: docker/Dockerfile.api
+    container_name: switchpilot-api
+    restart: always
+    environment:
+      DATABASE_URL: postgresql://switchpilot_admin:${DB_PASSWORD:-SecureP@ssw0rd2026!}@postgres:5432/switchpilot
+      REDIS_URL: redis://:${REDIS_PASSWORD:-SecureRedis2026!}@redis:6379/0
+      VAULT_ADDR: http://vault:8200
+      JWT_SECRET: ${JWT_SECRET:-SwitchPilotEnterpriseJwtSecretKey2026!}
+    ports:
+      - "8000:8000"
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+
+volumes:
+  pgdata:
+  redisdata:

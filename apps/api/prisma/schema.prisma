@@ -1,0 +1,1261 @@
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+enum InvitationStatus {
+  PENDING
+  ACCEPTED
+  EXPIRED
+  REVOKED
+}
+
+enum TaskExecutionStatus {
+  QUEUED
+  RUNNING
+  RETRYING
+  WAITING_APPROVAL
+  COMPLETED
+  CANCELLED
+  ROLLBACK_STARTED
+  ROLLBACK_FINISHED
+  FAILED
+}
+
+enum ConnectionProtocol {
+  SSH
+  TELNET
+  NETCONF
+  RESTCONF
+  SNMP_V2C
+  SNMP_V3
+  HTTPS_API
+  HTTP_API
+  GRPC
+}
+
+enum ConnectionErrorType {
+  AUTH_FAILED
+  HOST_UNREACHABLE
+  DNS_FAILURE
+  CONNECTION_REFUSED
+  TIMEOUT
+  PERMISSION_DENIED
+  PROTOCOL_UNSUPPORTED
+  CERTIFICATE_ERROR
+  UNKNOWN_ERROR
+}
+
+enum CredentialType {
+  PASSWORD
+  SSH_KEY
+  API_TOKEN
+  OAUTH_TOKEN
+  SNMP_COMMUNITY
+  SNMP_V3_USER
+  CLIENT_CERTIFICATE
+}
+
+enum ExecutionMode {
+  DRY_RUN
+  PREVIEW_ONLY
+  IMMEDIATE
+  SCHEDULED
+  MAINTENANCE_WINDOW
+  BULK_EXECUTION
+  CANARY_DEPLOYMENT
+  PHASED_ROLLOUT
+  EMERGENCY
+  ROLLBACK
+}
+
+enum ExecutionStatus {
+  QUEUED
+  PREPARING
+  WAITING_APPROVAL
+  CONNECTING
+  AUTHENTICATING
+  EXECUTING
+  VERIFYING
+  COMPLETED
+  FAILED
+  CANCELLED
+  ROLLING_BACK
+  ROLLBACK_COMPLETED
+}
+
+enum SnapshotType {
+  RUNNING_CONFIG
+  STARTUP_CONFIG
+  CANDIDATE_CONFIG
+  GOLDEN_CONFIG
+  LAST_KNOWN_GOOD
+  PRE_CHANGE_SNAPSHOT
+  POST_CHANGE_SNAPSHOT
+  EMERGENCY_SNAPSHOT
+}
+
+enum ChangeCategory {
+  EMERGENCY
+  STANDARD
+  MAJOR
+  MINOR
+}
+
+enum ChangeApprovalStatus {
+  DRAFT
+  PENDING_REVIEW
+  PENDING_APPROVAL
+  APPROVED
+  REJECTED
+  EXECUTED
+  CANCELLED
+}
+
+enum TemplateCategory {
+  VLAN_MANAGEMENT
+  PORT_CONFIG
+  SYSTEM_IDENTITY
+  TELEMETRY_LOGGING
+  SECURITY_AAA
+  FIRMWARE_MAINTENANCE
+  GOLDEN_BASELINE
+  COMPLIANCE
+}
+
+enum AiIntentCategory {
+  NATURAL_LANGUAGE_CONFIG
+  CONFIG_EXPLANATION
+  CONFIG_REVIEW
+  RISK_ADVISOR
+  BEST_PRACTICE_ADVISOR
+  COMPLIANCE_ADVISOR
+  MIGRATION_ASSISTANT
+  VENDOR_TRANSLATION_ASSISTANT
+  TROUBLESHOOTING_ASSISTANT
+  ROOT_CAUSE_ANALYSIS
+  FIRMWARE_RECOMMENDATION
+  INTERFACE_ANALYZER
+  VLAN_ADVISOR
+  ACL_ADVISOR
+  QOS_ADVISOR
+  STP_ADVISOR
+  ROUTING_ADVISOR
+  SECURITY_ADVISOR
+  TOPOLOGY_EXPLANATION
+  CHANGE_IMPACT_PREDICTION
+}
+
+enum PlatformPlan {
+  COMMUNITY
+  PROFESSIONAL
+  BUSINESS
+  ENTERPRISE
+  MSP
+  CUSTOM
+}
+
+enum TenantType {
+  SINGLE_TENANT
+  MULTI_TENANT
+  ENTERPRISE_TENANT
+  MSP_TENANT
+}
+
+enum FeatureFlagScope {
+  GLOBAL
+  TENANT
+  ORGANIZATION
+  USER
+}
+
+enum LicenseType {
+  CLOUD
+  OFFLINE
+  FLOATING
+  TRIAL
+  ACADEMIC
+}
+
+enum AssetLifecycleState {
+  PLANNED
+  ORDERED
+  IN_TRANSIT
+  INSTALLED
+  PRODUCTION
+  MAINTENANCE
+  DEPRECATED
+  RETIRED
+  DISPOSED
+}
+
+enum AlertSeverity {
+  INFO
+  WARNING
+  MINOR
+  MAJOR
+  CRITICAL
+  EMERGENCY
+}
+
+enum AlertType {
+  THRESHOLD
+  RATE
+  ANOMALY
+  MISSING_TELEMETRY
+  DEVICE_DOWN
+  INTERFACE_DOWN
+  CONFIG_DRIFT
+  AUTH_FAILURE
+  EXECUTION_FAILURE
+  WORKFLOW_FAILURE
+}
+
+enum AlertStatus {
+  ACTIVE
+  ACKNOWLEDGED
+  RESOLVED
+  SUPPRESSED
+}
+
+enum TelemetrySourceType {
+  SNMP_V2
+  SNMP_V3
+  STREAMING_TELEMETRY
+  GNMI
+  SYSLOG
+  REST_API
+  NETCONF_NOTIFICATION
+  WEBHOOK
+  CUSTOM_COLLECTOR
+}
+
+// ----------------------------------------------------
+// 1. ORGANIZATION & MULTI-TENANCY DOMAIN
+// ----------------------------------------------------
+
+model Organization {
+  id                 String               @id @default(uuid())
+  name               String
+  slug               String               @unique
+  logoUrl            String?
+  timezone           String               @default("UTC")
+  language           String               @default("en")
+  securityPolicy     SecurityPolicy?
+  users              User[]
+  roles              Role[]
+  invitations        Invitation[]
+  deviceGroups       DeviceGroup[]
+  devices            Device[]
+  vaultSecrets       VaultSecret[]
+  bastionHosts       BastionHost[]
+  executionPlans     ExecutionPlan[]
+  changeRequests     ChangeRequest[]
+  automationTemplates AutomationTemplate[]
+  workflows          AutomationWorkflow[]
+  schedules          AutomationSchedule[]
+  maintenanceWindows MaintenanceWindow[]
+  aiConversations    AiConversation[]
+  alerts             Alert[]
+  alertPolicies      AlertPolicy[]
+  discoveryJobs      DiscoveryJob[]
+  topologyNodes      TopologyNode[]
+  reportSchedules    ReportSchedule[]
+  reportArtifacts    ReportArtifact[]
+  regions            Region[]
+  cmdbServices       CmdbService[]
+  subscriptions      Subscription[]
+  licenses           LicenseKey[]
+  featureFlags       FeatureFlag[]
+  apiKeys            ApiKey[]
+  invoices           BillingInvoice[]
+  quotas             TenantQuota[]
+  firmwares          Firmware[]
+  auditLogs          AuditLog[]
+  createdAt          DateTime             @default(now())
+  updatedAt          DateTime             @updatedAt
+
+  @@map("organizations")
+}
+
+model SecurityPolicy {
+  id                    String       @id @default(uuid())
+  organizationId        String       @unique
+  organization          Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  minPasswordLength     Int          @default(12)
+  requireUppercase      Boolean      @default(true)
+  requireNumbers        Boolean      @default(true)
+  requireSpecialChars   Boolean      @default(true)
+  sessionMaxDurationMin Int          @default(1440)
+  idleTimeoutMin        Int          @default(60)
+  enforceMfa            Boolean      @default(false)
+  createdAt             DateTime     @default(now())
+  updatedAt             DateTime     @updatedAt
+
+  @@map("security_policies")
+}
+
+// ----------------------------------------------------
+// 2. IDENTITY & RBAC DOMAIN
+// ----------------------------------------------------
+
+model User {
+  id              String               @id @default(uuid())
+  email           String               @unique
+  passwordHash    String
+  fullName        String
+  avatarUrl       String?
+  isEmailVerified Boolean              @default(false)
+  isActive        Boolean              @default(true)
+  organizationId  String
+  organization    Organization         @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  roles           UserRole[]
+  sessions        Session[]
+  refreshTokens   RefreshToken[]
+  executionPlans  ExecutionPlan[]
+  changeRequests  ChangeRequest[]      @relation("RequestedChanges")
+  approvals       ChangeApproval[]
+  workflows       AutomationWorkflow[]
+  aiConversations AiConversation[]
+  auditLogs       AuditLog[]
+  createdAt       DateTime             @default(now())
+  updatedAt       DateTime             @updatedAt
+
+  @@index([organizationId])
+  @@map("users")
+}
+
+model Role {
+  id              String           @id @default(uuid())
+  name            String
+  description     String?
+  isSystemDefault Boolean          @default(false)
+  organizationId  String
+  organization    Organization     @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  permissions     RolePermission[]
+  userRoles       UserRole[]
+  invitations     Invitation[]
+  createdAt       DateTime         @default(now())
+  updatedAt       DateTime         @updatedAt
+
+  @@unique([organizationId, name])
+  @@map("roles")
+}
+
+model Permission {
+  id          String           @id @default(uuid())
+  code        String           @unique
+  name        String
+  description String
+  group       String
+  roles       RolePermission[]
+  createdAt   DateTime         @default(now())
+
+  @@map("permissions")
+}
+
+model RolePermission {
+  roleId       String
+  permissionId String
+  role         Role       @relation(fields: [roleId], references: [id], onDelete: Cascade)
+  permission   Permission @relation(fields: [permissionId], references: [id], onDelete: Cascade)
+
+  @@id([roleId, permissionId])
+  @@map("role_permissions")
+}
+
+model UserRole {
+  userId String
+  roleId String
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  role   Role   @relation(fields: [roleId], references: [id], onDelete: Cascade)
+
+  @@id([userId, roleId])
+  @@map("user_roles")
+}
+
+model Session {
+  id           String    @id @default(uuid())
+  userId       String
+  user         User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  deviceAgent  String?
+  ipAddress    String?
+  isRevoked    Boolean   @default(false)
+  lastActiveAt DateTime  @default(now())
+  expiresAt    DateTime
+  createdAt    DateTime  @default(now())
+
+  @@index([userId])
+  @@map("sessions")
+}
+
+model RefreshToken {
+  id        String    @id @default(uuid())
+  tokenHash String    @unique
+  userId    String
+  user      User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  isRevoked Boolean   @default(false)
+  expiresAt DateTime
+  createdAt DateTime  @default(now())
+
+  @@index([userId])
+  @@map("refresh_tokens")
+}
+
+model Invitation {
+  id             String           @id @default(uuid())
+  email          String
+  organizationId String
+  organization   Organization     @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  roleId         String
+  role           Role             @relation(fields: [roleId], references: [id], onDelete: Cascade)
+  token          String           @unique
+  status         InvitationStatus @default(PENDING)
+  invitedBy      String
+  expiresAt      DateTime
+  createdAt      DateTime         @default(now())
+
+  @@index([organizationId])
+  @@map("invitations")
+}
+
+// ----------------------------------------------------
+// 3. CREDENTIAL VAULT & BASTION DOMAIN
+// ----------------------------------------------------
+
+model VaultSecret {
+  id             String             @id @default(uuid())
+  organizationId String
+  organization   Organization       @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  name           String
+  type           CredentialType
+  encryptedData  String             @db.Text
+  vaultEngineRef String?
+  credentials    DeviceCredential[]
+  createdAt      DateTime           @default(now())
+  updatedAt      DateTime           @updatedAt
+
+  @@index([organizationId])
+  @@map("vault_secrets")
+}
+
+model BastionHost {
+  id             String             @id @default(uuid())
+  organizationId String
+  organization   Organization       @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  name           String
+  hostname       String
+  port           Int                @default(22)
+  username       String
+  sshKeyRef      String?
+  connections    DeviceConnection[]
+  createdAt      DateTime           @default(now())
+
+  @@index([organizationId])
+  @@map("bastion_hosts")
+}
+
+// ----------------------------------------------------
+// 4. DEVICE DOMAIN & SNAPSHOTS
+// ----------------------------------------------------
+
+model Device {
+  id              String            @id @default(uuid())
+  organizationId  String
+  organization    Organization      @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  hostname        String
+  managementIp    String
+  vendor          String
+  model           String
+  osVersion       String
+  status          String            @default("OFFLINE")
+  
+  groupId         String?
+  group           DeviceGroup?      @relation(fields: [groupId], references: [id], onDelete: SetNull)
+  locationId      String?
+  location        DeviceLocation?   @relation(fields: [locationId], references: [id], onDelete: SetNull)
+  credentialId    String?
+  credential      DeviceCredential? @relation(fields: [credentialId], references: [id], onDelete: SetNull)
+  connection      DeviceConnection?
+  health          DeviceHealth?
+  capability      DeviceCapability?
+  
+  interfaces      DeviceInterface[]
+  snapshots       DeviceSnapshot[]
+  configVersions  ConfigVersion[]
+  inventories     DeviceInventory[]
+  tags            DeviceTag[]
+  telemetryMetrics TelemetryMetric[]
+  
+  createdAt       DateTime          @default(now())
+  updatedAt       DateTime          @updatedAt
+
+  @@index([organizationId])
+  @@index([managementIp])
+  @@map("devices")
+}
+
+model DeviceGroup {
+  id             String       @id @default(uuid())
+  organizationId String
+  organization   Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  name           String
+  description    String?
+  parentId       String?
+  parent         DeviceGroup? @relation("GroupHierarchy", fields: [parentId], references: [id], onDelete: SetNull)
+  children       DeviceGroup[] @relation("GroupHierarchy")
+  devices        Device[]
+  createdAt      DateTime     @default(now())
+  updatedAt      DateTime     @updatedAt
+
+  @@map("device_groups")
+}
+
+model DeviceLocation {
+  id          String   @id @default(uuid())
+  siteName    String
+  building    String?
+  floor       String?
+  rack        String?
+  gpsCoords   String?
+  devices     Device[]
+  createdAt   DateTime @default(now())
+
+  @@map("device_locations")
+}
+
+model DeviceCredential {
+  id             String       @id @default(uuid())
+  name           String
+  secretId       String?
+  secret         VaultSecret? @relation(fields: [secretId], references: [id], onDelete: SetNull)
+  devices        Device[]
+  createdAt      DateTime     @default(now())
+
+  @@map("device_credentials")
+}
+
+model DeviceConnection {
+  id                String               @id @default(uuid())
+  deviceId          String               @unique
+  device            Device               @relation(fields: [deviceId], references: [id], onDelete: Cascade)
+  protocol          ConnectionProtocol   @default(SSH)
+  port              Int                  @default(22)
+  timeoutSec        Int                  @default(15)
+  retries           Int                  @default(3)
+  keepAlive         Boolean              @default(true)
+  compression       Boolean              @default(true)
+  bastionId         String?
+  bastion           BastionHost?         @relation(fields: [bastionId], references: [id], onDelete: SetNull)
+  status            String               @default("IDLE")
+  lastConnectedAt   DateTime?
+  latencyMs         Int?
+  lastErrorType     ConnectionErrorType?
+  lastErrorMessage  String?
+  createdAt         DateTime             @default(now())
+  updatedAt         DateTime             @updatedAt
+
+  @@map("device_connections")
+}
+
+model DeviceHealth {
+  id           String   @id @default(uuid())
+  deviceId     String   @unique
+  device       Device   @relation(fields: [deviceId], references: [id], onDelete: Cascade)
+  cpuUsagePct  Float    @default(0.0)
+  memUsagePct  Float    @default(0.0)
+  tempCelsius  Float?
+  fanStatus    String   @default("OK")
+  psuStatus    String   @default("OK")
+  updatedAt    DateTime @updatedAt
+
+  @@map("device_health")
+}
+
+model DeviceCapability {
+  id                      String  @id @default(uuid())
+  deviceId                String  @unique
+  device                  Device  @relation(fields: [deviceId], references: [id], onDelete: Cascade)
+  supportsVlanManagement  Boolean @default(true)
+  supportsPortSecurity    Boolean @default(true)
+  supportsFirmwareUpgrade Boolean @default(true)
+  supportsDiffBackup      Boolean @default(true)
+  supportsNetconf         Boolean @default(false)
+  supportsRestconf        Boolean @default(false)
+
+  @@map("device_capabilities")
+}
+
+model DeviceInterface {
+  id          String   @id @default(uuid())
+  deviceId    String
+  device      Device   @relation(fields: [deviceId], references: [id], onDelete: Cascade)
+  name        String
+  description String?
+  speed       String   @default("1G")
+  adminStatus String   @default("UP")
+  operStatus  String   @default("UP")
+  mode        String   @default("ACCESS")
+  vlanId      Int?
+  poeEnabled  Boolean  @default(false)
+
+  @@map("device_interfaces")
+}
+
+model DeviceSnapshot {
+  id           String       @id @default(uuid())
+  deviceId     String
+  device       Device       @relation(fields: [deviceId], references: [id], onDelete: Cascade)
+  type         SnapshotType @default(RUNNING_CONFIG)
+  rawConfig    String       @db.Text
+  checksumSha  String
+  versionLabel String
+  createdAt    DateTime     @default(now())
+
+  @@map("device_snapshots")
+}
+
+model ConfigVersion {
+  id           String   @id @default(uuid())
+  deviceId     String
+  device       Device   @relation(fields: [deviceId], references: [id], onDelete: Cascade)
+  parentVerId  String?
+  branch       String   @default("main")
+  author       String
+  checksumSha  String
+  rawConfig    String   @db.Text
+  changeSummary String?
+  riskLevel    String   @default("SAFE")
+  createdAt    DateTime @default(now())
+
+  @@index([deviceId])
+  @@map("config_versions")
+}
+
+model DeviceInventory {
+  id           String   @id @default(uuid())
+  deviceId     String
+  device       Device   @relation(fields: [deviceId], references: [id], onDelete: Cascade)
+  slotName     String
+  component    String
+  serialNumber String?
+  partNumber   String?
+
+  @@map("device_inventories")
+}
+
+model DeviceTag {
+  id        String   @id @default(uuid())
+  deviceId  String
+  device    Device   @relation(fields: [deviceId], references: [id], onDelete: Cascade)
+  key       String
+  value     String
+
+  @@map("device_tags")
+}
+
+model Firmware {
+  id             String       @id @default(uuid())
+  organizationId String
+  organization   Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  vendor         String
+  targetModel    String
+  version        String
+  filename       String
+  checksumSha256 String
+  sizeBytes      BigInt
+  createdAt      DateTime     @default(now())
+
+  @@map("firmwares")
+}
+
+// ----------------------------------------------------
+// 5. ENTERPRISE AI NETWORK ENGINEER DOMAIN
+// ----------------------------------------------------
+
+model AiConversation {
+  id             String        @id @default(uuid())
+  organizationId String
+  organization   Organization  @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  userId         String
+  user           User          @relation(fields: [userId], references: [id], onDelete: Cascade)
+  title          String
+  messages       AiMessage[]
+  plans          AiPlan[]
+  createdAt      DateTime      @default(now())
+  updatedAt      DateTime      @updatedAt
+
+  @@index([organizationId])
+  @@map("ai_conversations")
+}
+
+model AiMessage {
+  id             String           @id @default(uuid())
+  conversationId String
+  conversation   AiConversation   @relation(fields: [conversationId], references: [id], onDelete: Cascade)
+  sender         String           // "USER" or "AI_ENGINEER"
+  intentCategory AiIntentCategory @default(NATURAL_LANGUAGE_CONFIG)
+  content        String           @db.Text
+  ccmPayloadJson String?          @db.Text
+  riskLevel      String?
+  createdAt      DateTime         @default(now())
+
+  @@map("ai_messages")
+}
+
+model AiPlan {
+  id             String         @id @default(uuid())
+  conversationId String
+  conversation   AiConversation @relation(fields: [conversationId], references: [id], onDelete: Cascade)
+  intent         String
+  stepsJson      String         @db.Text
+  ccmPayloadJson String         @db.Text
+  createdAt      DateTime       @default(now())
+
+  @@map("ai_plans")
+}
+
+// ----------------------------------------------------
+// 6. AUTOMATION PLATFORM DOMAIN
+// ----------------------------------------------------
+
+model AutomationTemplate {
+  id             String           @id @default(uuid())
+  organizationId String
+  organization   Organization     @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  name           String
+  code           String           @unique
+  category       TemplateCategory @default(VLAN_MANAGEMENT)
+  description    String
+  ccmSchemaJson  String           @db.Text
+  variableSchema String           @db.Text
+  isGlobal       Boolean          @default(false)
+  createdAt      DateTime         @default(now())
+  updatedAt      DateTime         @updatedAt
+
+  @@index([organizationId])
+  @@map("automation_templates")
+}
+
+model AutomationWorkflow {
+  id             String               @id @default(uuid())
+  organizationId String
+  organization   Organization         @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  creatorId      String
+  creator        User                 @relation(fields: [creatorId], references: [id], onDelete: Cascade)
+  name           String
+  nodesJson      String               @db.Text
+  targetFilter   String               @db.Text
+  isCanaryActive Boolean              @default(false)
+  schedules      AutomationSchedule[]
+  createdAt      DateTime             @default(now())
+  updatedAt      DateTime             @updatedAt
+
+  @@index([organizationId])
+  @@map("automation_workflows")
+}
+
+model AutomationSchedule {
+  id             String             @id @default(uuid())
+  organizationId String
+  organization   Organization       @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  workflowId     String
+  workflow       AutomationWorkflow @relation(fields: [workflowId], references: [id], onDelete: Cascade)
+  cronExpression String
+  isActive       Boolean            @default(true)
+  lastRunAt      DateTime?
+  nextRunAt      DateTime?
+  createdAt      DateTime           @default(now())
+
+  @@map("automation_schedules")
+}
+
+model MaintenanceWindow {
+  id             String       @id @default(uuid())
+  organizationId String
+  organization   Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  name           String
+  startTime      DateTime
+  endTime        DateTime
+  isFreezeWindow Boolean      @default(false)
+  createdAt      DateTime     @default(now())
+
+  @@map("maintenance_windows")
+}
+
+// ----------------------------------------------------
+// 7. CHANGE MANAGEMENT & EXECUTION DOMAIN
+// ----------------------------------------------------
+
+model ChangeRequest {
+  id             String               @id @default(uuid())
+  organizationId String
+  organization   Organization         @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  requesterId    String
+  requester      User                 @relation("RequestedChanges", fields: [requesterId], references: [id], onDelete: Cascade)
+  title          String
+  description    String
+  category       ChangeCategory       @default(STANDARD)
+  status         ChangeApprovalStatus @default(PENDING_REVIEW)
+  targetDevices  String[]
+  approvals      ChangeApproval[]
+  createdAt      DateTime             @default(now())
+  updatedAt      DateTime             @updatedAt
+
+  @@index([organizationId])
+  @@map("change_requests")
+}
+
+model ChangeApproval {
+  id              String        @id @default(uuid())
+  changeRequestId String
+  changeRequest   ChangeRequest @relation(fields: [changeRequestId], references: [id], onDelete: Cascade)
+  approverId      String
+  approver        User          @relation(fields: [approverId], references: [id], onDelete: Cascade)
+  stepName        String
+  isApproved      Boolean       @default(false)
+  comments        String?
+  decidedAt       DateTime?
+
+  @@map("change_approvals")
+}
+
+model ExecutionPlan {
+  id               String          @id @default(uuid())
+  organizationId   String
+  organization     Organization    @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  initiatedById    String
+  initiatedBy      User            @relation(fields: [initiatedById], references: [id], onDelete: Cascade)
+  mode             ExecutionMode   @default(IMMEDIATE)
+  status           ExecutionStatus @default(QUEUED)
+  riskLevel        String          @default("SAFE")
+  targetDevices    String[]
+  ccmPayloadJson   String          @db.Text
+  driverUsed       String          @default("Scrapli")
+  startedAt        DateTime?
+  completedAt      DateTime?
+  failureReason    String?
+  steps            ExecutionStep[]
+  createdAt        DateTime        @default(now())
+  updatedAt        DateTime        @updatedAt
+
+  @@index([organizationId])
+  @@map("execution_plans")
+}
+
+model ExecutionStep {
+  id              String        @id @default(uuid())
+  executionPlanId String
+  executionPlan   ExecutionPlan @relation(fields: [executionPlanId], references: [id], onDelete: Cascade)
+  stepName        String
+  status          String        @default("PENDING")
+  commandText     String?       @db.Text
+  outputLog       String?       @db.Text
+  executedAt      DateTime?
+
+  @@map("execution_steps")
+}
+
+// ----------------------------------------------------
+// 8. TASK QUEUE & AUDIT LOGGING DOMAIN
+// ----------------------------------------------------
+
+model TaskExecution {
+  id             String              @id @default(uuid())
+  taskType       String
+  targetDevices  String[]
+  status         TaskExecutionStatus @default(QUEUED)
+  payloadJson    String?             @db.Text
+  outputLog      String?             @db.Text
+  initiatedBy    String
+  startedAt      DateTime?
+  completedAt    DateTime?
+  createdAt      DateTime            @default(now())
+
+  @@map("task_executions")
+}
+
+model AuditLog {
+  id             String        @id @default(uuid())
+  organizationId String?
+  organization   Organization? @relation(fields: [organizationId], references: [id], onDelete: SetNull)
+  userId         String?
+  user           User?         @relation(fields: [userId], references: [id], onDelete: SetNull)
+  action         String
+  resource       String
+  detailsJson    String?       @db.Text
+  ipAddress      String?
+  userAgent      String?
+  createdAt      DateTime      @default(now())
+
+  @@map("audit_logs")
+}
+
+// ----------------------------------------------------
+// 9. MONITORING, TELEMETRY & OBSERVABILITY DOMAIN
+// ----------------------------------------------------
+
+model TelemetryMetric {
+  id          String              @id @default(uuid())
+  deviceId    String
+  device      Device              @relation(fields: [deviceId], references: [id], onDelete: Cascade)
+  metricType  String              // e.g. CPU_USAGE, MEMORY_USAGE, TEMPERATURE, BANDWIDTH
+  value       Float
+  unit        String              @default("%")
+  source      TelemetrySourceType @default(SNMP_V2)
+  collectedAt DateTime            @default(now())
+
+  @@index([deviceId])
+  @@map("telemetry_metrics")
+}
+
+model Alert {
+  id                 String        @id @default(uuid())
+  organizationId     String
+  organization       Organization  @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  deviceId           String
+  type               AlertType     @default(THRESHOLD)
+  severity           AlertSeverity @default(WARNING)
+  status             AlertStatus   @default(ACTIVE)
+  title              String
+  description        String
+  acknowledgedBy     String?
+  resolvedAt         DateTime?
+  correlationGroupId String?
+  createdAt          DateTime      @default(now())
+
+  @@index([organizationId])
+  @@index([deviceId])
+  @@map("alerts")
+}
+
+model AlertPolicy {
+  id             String        @id @default(uuid())
+  organizationId String
+  organization   Organization  @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  name           String
+  metricType     String
+  condition      String        @default("GREATER_THAN")
+  thresholdValue Float
+  severity       AlertSeverity @default(WARNING)
+  isActive       Boolean       @default(true)
+  createdAt      DateTime      @default(now())
+
+  @@index([organizationId])
+  @@map("alert_policies")
+}
+
+model EventCorrelation {
+  id                String   @id @default(uuid())
+  groupId           String
+  rootCauseAlertId  String
+  correlatedAlerts  String[] // Array of correlated Alert IDs
+  strategy          String   @default("ROOT_CAUSE")
+  confidence        Float    @default(0.0)
+  createdAt         DateTime @default(now())
+
+  @@map("event_correlations")
+}
+
+// ----------------------------------------------------
+// 10. DISCOVERY & TOPOLOGY DOMAIN
+// ----------------------------------------------------
+
+model DiscoveryJob {
+  id             String       @id @default(uuid())
+  organizationId String
+  organization   Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  name           String
+  seedIps        String[]
+  scanSubnets    String[]
+  status         String       @default("QUEUED")
+  discoveredCount Int         @default(0)
+  startedAt      DateTime?
+  completedAt    DateTime?
+  createdAt      DateTime     @default(now())
+
+  @@index([organizationId])
+  @@map("discovery_jobs")
+}
+
+model TopologyNode {
+  id             String       @id @default(uuid())
+  organizationId String
+  organization   Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  deviceId       String       @unique
+  label          String
+  role           String       @default("SWITCH")
+  layer          String       @default("LAYER_2")
+  posX           Float        @default(0.0)
+  posY           Float        @default(0.0)
+  isSpof         Boolean      @default(false)
+  outgoingLinks  TopologyLink[] @relation("SourceNode")
+  incomingLinks  TopologyLink[] @relation("TargetNode")
+  createdAt      DateTime     @default(now())
+
+  @@index([organizationId])
+  @@map("topology_nodes")
+}
+
+model TopologyLink {
+  id           String       @id @default(uuid())
+  sourceNodeId String
+  sourceNode   TopologyNode @relation("SourceNode", fields: [sourceNodeId], references: [id], onDelete: Cascade)
+  targetNodeId String
+  targetNode   TopologyNode @relation("TargetNode", fields: [targetNodeId], references: [id], onDelete: Cascade)
+  linkType     String       @default("PHYSICAL")
+  protocol     String       @default("LLDP")
+  bandwidth    String       @default("1G")
+  status       String       @default("UP")
+  isRedundant  Boolean      @default(true)
+
+  @@map("topology_links")
+}
+
+model DeviceDependency {
+  id              String   @id @default(uuid())
+  parentDeviceId  String
+  childDeviceId   String
+  dependencyType  String   @default("NETWORK_UPLINK")
+  criticality     String   @default("HIGH")
+  blastRadiusScore Int     @default(50)
+  createdAt       DateTime @default(now())
+
+  @@map("device_dependencies")
+}
+
+// ----------------------------------------------------
+// 11. REPORTING, ANALYTICS & BI DOMAIN
+// ----------------------------------------------------
+
+model ReportSchedule {
+  id             String       @id @default(uuid())
+  organizationId String
+  organization   Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  reportType     String       // e.g. EXECUTIVE_SUMMARY, CAPACITY_PLANNING, COMPLIANCE
+  frequency      String       @default("WEEKLY") // DAILY, WEEKLY, MONTHLY, QUARTERLY
+  recipients     String[]
+  format         String       @default("PDF") // PDF, EXCEL, CSV, JSON
+  isActive       Boolean      @default(true)
+  lastRunAt      DateTime?
+  nextRunAt      DateTime?
+  createdAt      DateTime     @default(now())
+
+  @@index([organizationId])
+  @@map("report_schedules")
+}
+
+model ReportArtifact {
+  id             String       @id @default(uuid())
+  organizationId String
+  organization   Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  title          String
+  reportType     String
+  format         String       @default("PDF")
+  fileUrl        String?
+  fileSizeBytes  BigInt       @default(0)
+  generatedBy    String       @default("SYSTEM")
+  createdAt      DateTime     @default(now())
+
+  @@index([organizationId])
+  @@map("report_artifacts")
+}
+
+// ----------------------------------------------------
+// 12. HARDENING, CMDB & TSDB EXTENSION DOMAIN
+// ----------------------------------------------------
+
+model Region {
+  id             String       @id @default(uuid())
+  organizationId String
+  organization   Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  name           String
+  code           String       @unique
+  buildings      Building[]
+  createdAt      DateTime     @default(now())
+
+  @@index([organizationId])
+  @@map("regions")
+}
+
+model Building {
+  id          String   @id @default(uuid())
+  regionId    String
+  region      Region   @relation(fields: [regionId], references: [id], onDelete: Cascade)
+  name        String
+  address     String?
+  floors      Int      @default(1)
+  createdAt   DateTime @default(now())
+
+  @@map("buildings")
+}
+
+model CmdbService {
+  id             String       @id @default(uuid())
+  organizationId String
+  organization   Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  serviceName    String
+  appName        String
+  criticality    String       @default("HIGH")
+  ownerUser      String
+  mappedDeviceIds String[]
+  createdAt      DateTime     @default(now())
+
+  @@index([organizationId])
+  @@map("cmdb_services")
+}
+
+model TopologySnapshot {
+  id           String   @id @default(uuid())
+  versionLabel String
+  nodesJson    String   @db.Text
+  linksJson    String   @db.Text
+  createdById  String
+  createdAt    DateTime @default(now())
+
+  @@map("topology_snapshots")
+}
+
+model NotificationQueueItem {
+  id           String   @id @default(uuid())
+  channel      String
+  title        String
+  message      String
+  retryCount   Int      @default(0)
+  isDeadLetter Boolean  @default(false)
+  lastError    String?
+  createdAt    DateTime @default(now())
+
+  @@map("notification_queue_items")
+}
+
+// ----------------------------------------------------
+// 13. SAAS, MSP, MARKETPLACE & BILLING DOMAIN
+// ----------------------------------------------------
+
+model MspPartner {
+  id             String         @id @default(uuid())
+  name           String
+  slug           String         @unique
+  contactEmail   String
+  isVerified     Boolean        @default(true)
+  createdAt      DateTime       @default(now())
+
+  @@map("msp_partners")
+}
+
+model Subscription {
+  id             String       @id @default(uuid())
+  organizationId String
+  organization   Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  plan           PlatformPlan @default(BUSINESS)
+  status         String       @default("ACTIVE")
+  deviceLimit    Int          @default(500)
+  userLimit      Int          @default(50)
+  aiLimit        Int          @default(10000)
+  currentPeriodEnd DateTime
+  createdAt      DateTime     @default(now())
+
+  @@index([organizationId])
+  @@map("subscriptions")
+}
+
+model LicenseKey {
+  id             String       @id @default(uuid())
+  organizationId String
+  organization   Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  keyString      String       @unique
+  type           LicenseType  @default(CLOUD)
+  maxDevices     Int          @default(500)
+  isActivated    Boolean      @default(true)
+  expiresAt      DateTime
+  graceDays      Int          @default(14)
+  createdAt      DateTime     @default(now())
+
+  @@index([organizationId])
+  @@map("license_keys")
+}
+
+model FeatureFlag {
+  id             String           @id @default(uuid())
+  organizationId String?
+  organization   Organization?    @relation(fields: [organizationId], references: [id], onDelete: SetNull)
+  key            String           @unique
+  scope          FeatureFlagScope @default(GLOBAL)
+  isEnabled      Boolean          @default(false)
+  rolloutPercentage Int          @default(100)
+  createdAt      DateTime         @default(now())
+
+  @@map("feature_flags")
+}
+
+model ApiKey {
+  id             String       @id @default(uuid())
+  organizationId String
+  organization   Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  name           String
+  keyHash        String       @unique
+  prefix         String
+  scopes         String[]
+  rateLimitPerMin Int         @default(1000)
+  lastUsedAt     DateTime?
+  expiresAt      DateTime?
+  createdAt      DateTime     @default(now())
+
+  @@index([organizationId])
+  @@map("api_keys")
+}
+
+model MarketplacePlugin {
+  id             String   @id @default(uuid())
+  code           String   @unique
+  name           String
+  version        String   @default("1.0.0")
+  category       String   @default("TRANSLATOR")
+  author         String
+  description    String
+  rating         Float    @default(5.0)
+  isVerified     Boolean  @default(true)
+  isInstalled    Boolean  @default(false)
+  createdAt      DateTime @default(now())
+
+  @@map("marketplace_plugins")
+}
+
+model BillingInvoice {
+  id             String       @id @default(uuid())
+  organizationId String
+  organization   Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  invoiceNumber  String       @unique
+  amountUsd      Float
+  status         String       @default("PAID")
+  lineItemsJson  String       @db.Text
+  dueDate        DateTime
+  createdAt      DateTime     @default(now())
+
+  @@index([organizationId])
+  @@map("billing_invoices")
+}
+
+model TenantQuota {
+  id             String       @id @default(uuid())
+  organizationId String       @unique
+  organization   Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  maxDevices     Int          @default(500)
+  maxUsers       Int          @default(50)
+  maxApiCalls    Int          @default(100000)
+  maxStorageGb   Int          @default(100)
+  usedDevices    Int          @default(0)
+  usedStorageGb  Int          @default(0)
+  updatedAt      DateTime     @updatedAt
+
+  @@map("tenant_quotas")
+}
+
+
+
+

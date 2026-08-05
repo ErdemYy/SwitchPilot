@@ -1,0 +1,20 @@
+{
+  "name": "@switchpilot/tests",
+  "version": "1.0.0",
+  "private": true,
+  "description": "SwitchPilot Enterprise Multi-Platform Test Suite (Unit, Integration, Contract, E2E, Performance, Chaos)",
+  "scripts": {
+    "test": "vitest run",
+    "test:e2e": "playwright test",
+    "test:visual": "playwright test --config=playwright.config.ts --project=visual",
+    "test:contract": "pytest contract/",
+    "test:security": "pytest security/",
+    "test:performance": "k6 run performance/k6_load_test.js"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.44.0",
+    "k6": "^0.0.0",
+    "typescript": "^5.4.5",
+    "vitest": "^1.6.0"
+  }
+}

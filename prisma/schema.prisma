@@ -1,0 +1,205 @@
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+enum InvitationStatus {
+  PENDING
+  ACCEPTED
+  EXPIRED
+  REVOKED
+}
+
+enum TokenType {
+  REFRESH
+  EMAIL_VERIFICATION
+  PASSWORD_RESET
+}
+
+model Organization {
+  id              String           @id @default(uuid())
+  name            String
+  slug            String           @unique
+  logoUrl         String?
+  timezone        String           @default("UTC")
+  language        String           @default("en")
+  securityPolicy  SecurityPolicy?
+  users           User[]
+  roles           Role[]
+  invitations     Invitation[]
+  devices         Device[]
+  auditLogs       AuditLog[]
+  createdAt       DateTime         @default(now())
+  updatedAt       DateTime         @updatedAt
+
+  @@map("organizations")
+}
+
+model SecurityPolicy {
+  id                    String       @id @default(uuid())
+  organizationId        String       @unique
+  organization          Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  minPasswordLength     Int          @default(12)
+  requireUppercase      Boolean      @default(true)
+  requireNumbers        Boolean      @default(true)
+  requireSpecialChars   Boolean      @default(true)
+  sessionMaxDurationMin Int          @default(1440) // 24 hours
+  idleTimeoutMin        Int          @default(60)   // 1 hour
+  enforceMfa            Boolean      @default(false)
+  createdAt             DateTime     @default(now())
+  updatedAt             DateTime     @updatedAt
+
+  @@map("security_policies")
+}
+
+model User {
+  id                String         @id @default(uuid())
+  email             String         @unique
+  passwordHash      String
+  fullName          String
+  avatarUrl         String?
+  isEmailVerified   Boolean        @default(false)
+  isActive          Boolean        @default(true)
+  organizationId    String
+  organization      Organization   @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  roles             UserRole[]
+  sessions          Session[]
+  refreshTokens     RefreshToken[]
+  auditLogs         AuditLog[]
+  createdAt         DateTime       @default(now())
+  updatedAt         DateTime       @updatedAt
+
+  @@index([organizationId])
+  @@map("users")
+}
+
+model Role {
+  id              String           @id @default(uuid())
+  name            String
+  description     String?
+  isSystemDefault Boolean          @default(false)
+  organizationId  String
+  organization    Organization     @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  permissions     RolePermission[]
+  userRoles       UserRole[]
+  invitations     Invitation[]
+  createdAt       DateTime         @default(now())
+  updatedAt       DateTime         @updatedAt
+
+  @@unique([organizationId, name])
+  @@map("roles")
+}
+
+model Permission {
+  id          String           @id @default(uuid())
+  code        String           @unique // e.g., 'devices:read', 'roles:manage'
+  name        String
+  description String
+  group       String           // e.g., 'Devices', 'Identity', 'System'
+  roles       RolePermission[]
+  createdAt   DateTime         @default(now())
+
+  @@map("permissions")
+}
+
+model RolePermission {
+  roleId       String
+  permissionId String
+  role         Role       @relation(fields: [roleId], references: [id], onDelete: Cascade)
+  permission   Permission @relation(fields: [permissionId], references: [id], onDelete: Cascade)
+
+  @@id([roleId, permissionId])
+  @@map("role_permissions")
+}
+
+model UserRole {
+  userId String
+  roleId String
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  role   Role   @relation(fields: [roleId], references: [id], onDelete: Cascade)
+
+  @@id([userId, roleId])
+  @@map("user_roles")
+}
+
+model Session {
+  id           String    @id @default(uuid())
+  userId       String
+  user         User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  deviceAgent  String?
+  ipAddress    String?
+  isRevoked    Boolean   @default(false)
+  lastActiveAt DateTime  @default(now())
+  expiresAt    DateTime
+  createdAt    DateTime  @default(now())
+
+  @@index([userId])
+  @@map("sessions")
+}
+
+model RefreshToken {
+  id        String    @id @default(uuid())
+  tokenHash String    @unique
+  userId    String
+  user      User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  isRevoked Boolean   @default(false)
+  expiresAt DateTime
+  createdAt DateTime  @default(now())
+
+  @@index([userId])
+  @@map("refresh_tokens")
+}
+
+model Invitation {
+  id             String           @id @default(uuid())
+  email          String
+  organizationId String
+  organization   Organization     @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  roleId         String
+  role           Role             @relation(fields: [roleId], references: [id], onDelete: Cascade)
+  token          String           @unique
+  status         InvitationStatus @default(PENDING)
+  invitedBy      String
+  expiresAt      DateTime
+  createdAt      DateTime         @default(now())
+
+  @@index([organizationId])
+  @@map("invitations")
+}
+
+model Device {
+  id              String         @id @default(uuid())
+  organizationId  String
+  organization    Organization   @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  hostname        String
+  ipAddress       String
+  vendor          String
+  model           String
+  osVersion       String
+  status          String         @default("OFFLINE")
+  healthPercent   Int            @default(100)
+  createdAt       DateTime       @default(now())
+  updatedAt       DateTime       @updatedAt
+
+  @@index([organizationId])
+  @@map("devices")
+}
+
+model AuditLog {
+  id             String        @id @default(uuid())
+  organizationId String?
+  organization   Organization? @relation(fields: [organizationId], references: [id], onDelete: SetNull)
+  userId         String?
+  user           User?         @relation(fields: [userId], references: [id], onDelete: SetNull)
+  action         String
+  resource       String
+  ipAddress      String?
+  userAgent      String?
+  createdAt      DateTime      @default(now())
+
+  @@map("audit_logs")
+}

@@ -1,0 +1,89 @@
+name: SwitchPilot Enterprise DevSecOps CI/CD Pipeline
+
+on:
+  push:
+    branches: [ main, staging, develop ]
+  pull_request:
+    branches: [ main, staging ]
+
+jobs:
+  static-analysis:
+    name: 1. Static Analysis & Type Checking
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v3
+        with:
+          version: 9
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: 'pnpm'
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm lint
+      - run: pnpm --recursive typecheck
+
+  security-scan:
+    name: 2. SAST & Secret Scanning
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Run TruffleHog Secret Scan
+        uses: trufflesecurity/trufflehog-action@main
+      - name: Run Semgrep SAST
+        uses: returntocorp/semgrep-action@v1
+
+  testing:
+    name: 3. Unit, Integration & Contract Testing
+    needs: [static-analysis, security-scan]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v3
+        with:
+          version: 9
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm test
+
+  container-build-scan:
+    name: 4. Docker Build, Container Scan & SBOM
+    needs: testing
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Build API Docker Image
+        run: docker build -t switchpilot-api:latest -f docker/Dockerfile.api .
+      - name: Scan Image with Trivy
+        uses: aquasecurity/trivy-action@master
+        with:
+          image-ref: 'switchpilot-api:latest'
+          format: 'table'
+          exit-code: '0'
+      - name: Generate SBOM with Syft
+        uses: anchore/sbom-action@v0
+        with:
+          image: 'switchpilot-api:latest'
+
+  deploy-staging:
+    name: 5. Helm Staging Deployment & Verification
+    needs: container-build-scan
+    if: github.ref == 'refs/heads/staging'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Deploy to Staging Kubernetes Cluster
+        run: |
+          echo "Deploying Helm Release to staging namespace..."
+          helm upgrade --install switchpilot-staging ./helm/switchpilot --namespace staging --create-namespace
+
+  deploy-production:
+    name: 6. Helm Production Deployment & Post-Verification
+    needs: container-build-scan
+    if: github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Deploy to Production Kubernetes Cluster
+        run: |
+          echo "Deploying Helm Release to production namespace..."
+          helm upgrade --install switchpilot-prod ./helm/switchpilot --namespace production --create-namespace

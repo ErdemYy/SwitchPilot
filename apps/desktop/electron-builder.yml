@@ -1,0 +1,73 @@
+appId: io.switchpilot.desktop
+productName: SwitchPilot Enterprise Desktop
+copyright: Copyright © 2026 SwitchPilot Inc.
+directories:
+  output: release/${version}
+  buildResources: build
+
+protocols:
+  - name: SwitchPilot Protocol Handler
+    schemes:
+      - switchpilot
+
+fileAssociations:
+  - ext: switchpilot
+    name: SwitchPilot Configuration Baseline
+    role: Editor
+  - ext: spbackup
+    name: SwitchPilot Backup Snapshot Archive
+    role: Editor
+  - ext: spworkflow
+    name: SwitchPilot Workflow Automation DAG
+    role: Editor
+  - ext: sppolicy
+    name: SwitchPilot Compliance Policy
+    role: Editor
+  - ext: spreport
+    name: SwitchPilot Executive BI Report
+    role: Viewer
+
+win:
+  target:
+    - target: nsis
+      arch:
+        - x64
+        - arm64
+    - target: msi
+      arch:
+        - x64
+    - target: portable
+      arch:
+        - x64
+  icon: build/icon.ico
+  publisherName: SwitchPilot Inc.
+  certificateSubjectName: "CN=SwitchPilot Inc., O=SwitchPilot Inc., L=San Francisco, S=CA, C=US"
+
+mac:
+  target:
+    - target: dmg
+      arch:
+        - x64
+        - arm64
+        - universal
+    - target: pkg
+      arch:
+        - x64
+        - arm64
+  category: public.app-category.developer-tools
+  icon: build/icon.icns
+  hardenedRuntime: true
+  gatekeeperAssess: false
+  entitlements: build/entitlements.mac.plist
+
+linux:
+  target:
+    - AppImage
+    - deb
+    - rpm
+  category: Network
+  icon: build/icons
+
+publish:
+  provider: generic
+  url: https://updates.switchpilot.io/electron/

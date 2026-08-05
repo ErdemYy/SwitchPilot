@@ -1,0 +1,18 @@
+apiVersion: v2
+name: switchpilot
+description: Enterprise Multi-Vendor Network Management, Automation & AI Platform Helm Chart
+type: application
+version: 1.0.0
+appVersion: "1.0.0"
+keywords:
+  - network-automation
+  - multi-vendor
+  - cisco
+  - aruba
+  - juniper
+  - huawei
+  - telemetry
+  - ai-assistant
+maintainers:
+  - name: SwitchPilot DevOps Team
+    email: devops@switchpilot.io

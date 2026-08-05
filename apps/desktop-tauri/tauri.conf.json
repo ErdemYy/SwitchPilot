@@ -1,0 +1,60 @@
+{
+  "$schema": "https://schema.tauri.app/config/2",
+  "productName": "SwitchPilot Enterprise",
+  "version": "1.0.0",
+  "identifier": "io.switchpilot.desktop",
+  "build": {
+    "frontendDist": "../web/out",
+    "devUrl": "http://localhost:3000"
+  },
+  "app": {
+    "windows": [
+      {
+        "title": "SwitchPilot Enterprise Desktop",
+        "width": 1440,
+        "height": 900,
+        "resizable": true,
+        "fullscreen": false,
+        "decorations": true,
+        "transparent": false
+      }
+    ],
+    "security": {
+      "csp": "default-src 'self'; script-src 'self' 'unsafe-eval'; style-src 'self' 'unsafe-inline'; connect-src 'self' https://api.switchpilot.io"
+    }
+  },
+  "bundle": {
+    "active": true,
+    "targets": ["msi", "nsis"],
+    "icon": [
+      "icons/32x32.png",
+      "icons/128x128.png",
+      "icons/icon.icns",
+      "icons/icon.ico"
+    ],
+    "resources": [],
+    "copyright": "Copyright © 2026 SwitchPilot Inc.",
+    "category": "DeveloperTool",
+    "shortDescription": "Enterprise Multi-Vendor Network Automation & Operations Platform",
+    "windows": {
+      "certificateThumbprint": null,
+      "digestAlgorithm": "sha256",
+      "timestampUrl": "http://timestamp.digicert.com",
+      "wix": {
+        "language": "en-US"
+      },
+      "nsis": {
+        "languages": ["English"],
+        "displayLanguageSelector": false
+      }
+    }
+  },
+  "plugins": {
+    "updater": {
+      "pubkey": "dW50cnVzdGVkIGNvbW1lbnQ6IG1pbmlzaWduIHB1YmxpYyBrZXk6IDZENTgwOTk5MTRFRDMwQjYKWlVSTE16UkQ=",
+      "endpoints": [
+        "https://api.switchpilot.io/api/v1/updater/check?platform={{target}}&version={{current_version}}"
+      ]
+    }
+  }
+}

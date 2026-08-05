@@ -1,0 +1,24 @@
+{
+  "name": "@switchpilot/desktop",
+  "version": "1.0.0",
+  "private": true,
+  "description": "SwitchPilot Enterprise Cross-Platform Electron Desktop Application",
+  "main": "dist/main/index.js",
+  "scripts": {
+    "dev": "electron .",
+    "build": "tsc",
+    "package:win": "electron-builder --win --x64 --arm64",
+    "package:mac": "electron-builder --mac --universal",
+    "package:linux": "electron-builder --linux AppImage deb rpm"
+  },
+  "dependencies": {
+    "better-sqlite3": "^11.0.0",
+    "electron-updater": "^6.3.0",
+    "keytar": "^7.9.0"
+  },
+  "devDependencies": {
+    "electron": "^31.0.0",
+    "electron-builder": "^24.13.0",
+    "typescript": "^5.4.5"
+  }
+}
