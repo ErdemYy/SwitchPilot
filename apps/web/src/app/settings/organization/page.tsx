@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState } from 'react';
-import { AppShell } from '../../layouts/AppShell';
+import { AppShell } from '../../../layouts/AppShell';
 
 export default function OrganizationSettingsPage() {
   const [orgName, setOrgName] = useState('Global Production NOC');

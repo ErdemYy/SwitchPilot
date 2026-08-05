@@ -5,7 +5,6 @@ import dynamic from 'next/dynamic';
 const MonitoringClient = dynamic(
   () => import('../../features/monitoring/MonitoringClient').then((mod) => mod.MonitoringClient),
   {
-    ssr: false,
     loading: () => (
       <div className="min-h-screen bg-slate-950 flex items-center justify-center text-slate-400 font-mono text-xs">
         Loading Monitoring Console...

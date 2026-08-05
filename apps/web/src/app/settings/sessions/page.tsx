@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState } from 'react';
-import { AppShell } from '../../layouts/AppShell';
+import { AppShell } from '../../../layouts/AppShell';
 
 export default function SessionManagementPage() {
   const [sessions, setSessions] = useState([

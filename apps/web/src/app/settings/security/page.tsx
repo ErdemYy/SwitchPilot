@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState } from 'react';
-import { AppShell } from '../../layouts/AppShell';
+import { AppShell } from '../../../layouts/AppShell';
 
 export default function SecuritySettingsPage() {
   const [minPasswordLength, setMinPasswordLength] = useState(12);

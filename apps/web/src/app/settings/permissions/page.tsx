@@ -1,7 +1,7 @@
 'use client';
 
 import React from 'react';
-import { AppShell } from '../../layouts/AppShell';
+import { AppShell } from '../../../layouts/AppShell';
 
 export default function PermissionRegistryPage() {
   const permissionGroups = [
