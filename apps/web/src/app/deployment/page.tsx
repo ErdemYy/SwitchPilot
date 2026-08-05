@@ -83,7 +83,7 @@ export default function DeploymentDashboardPage() {
                       Required: {chk.required} · Detected: {chk.actual}
                     </span>
                   </div>
-                  <Badge variant="success" size="sm">{chk.status}</Badge>
+                  <Badge variant="success">{chk.status}</Badge>
                 </div>
               ))}
             </div>

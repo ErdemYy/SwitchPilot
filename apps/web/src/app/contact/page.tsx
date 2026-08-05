@@ -21,7 +21,7 @@ export default function ContactPage() {
 
       <div className="py-16 px-6 max-w-xl mx-auto space-y-8">
         <div className="text-center space-y-3">
-          <Badge variant="info" size="sm">ENTERPRISE SALES & DEMO</Badge>
+          <Badge variant="info">ENTERPRISE SALES & DEMO</Badge>
           <h1 className="text-3xl font-bold tracking-tight text-slate-900">
             Contact Enterprise Solutions Team
           </h1>

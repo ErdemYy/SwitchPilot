@@ -25,7 +25,7 @@ export default function MarketingLandingPage() {
       {/* Feature Showcase Grid */}
       <section className="py-20 px-6 max-w-[1536px] mx-auto space-y-12">
         <div className="text-center max-w-3xl mx-auto space-y-3">
-          <Badge variant="info" size="sm">ENTERPRISE PLATFORM CAPABILITIES</Badge>
+          <Badge variant="info">ENTERPRISE PLATFORM CAPABILITIES</Badge>
           <h2 className="text-3xl md:text-5xl font-bold tracking-tight text-[#1E293B]">
             Engineered for Modern Enterprise NOCs
           </h2>
@@ -52,7 +52,7 @@ export default function MarketingLandingPage() {
       <section className="py-16 px-6 max-w-[1536px] mx-auto">
         <div className="bg-[#111827] text-white rounded-3xl p-10 md:p-16 flex flex-col md:flex-row items-center justify-between gap-8 shadow-xl">
           <div className="space-y-3 max-w-xl">
-            <Badge variant="success" size="sm">DESKTOP READY</Badge>
+            <Badge variant="success">DESKTOP READY</Badge>
             <h2 className="text-3xl md:text-4xl font-bold tracking-tight">
               Download SwitchPilot Desktop for Windows, macOS & Linux
             </h2>

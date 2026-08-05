@@ -23,7 +23,7 @@ export default function PricingPage() {
 
       <div className="py-16 px-6 max-w-[1536px] mx-auto space-y-12">
         <div className="text-center max-w-3xl mx-auto space-y-3">
-          <Badge variant="info" size="sm">TRANSPARENT PRICING</Badge>
+          <Badge variant="info">TRANSPARENT PRICING</Badge>
           <h1 className="text-3xl md:text-5xl font-bold tracking-tight text-slate-900">
             Flexible Plans for Every Scale
           </h1>

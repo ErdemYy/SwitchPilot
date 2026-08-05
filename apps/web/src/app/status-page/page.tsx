@@ -22,7 +22,7 @@ export default function SystemStatusPage() {
 
       <div className="py-16 px-6 max-w-3xl mx-auto space-y-8">
         <div className="text-center space-y-3">
-          <Badge variant="success" size="sm">ALL SYSTEMS OPERATIONAL</Badge>
+          <Badge variant="success">ALL SYSTEMS OPERATIONAL</Badge>
           <h1 className="text-3xl font-bold tracking-tight text-slate-900">
             SwitchPilot Real-Time System Status
           </h1>
@@ -37,7 +37,7 @@ export default function SystemStatusPage() {
               <span className="font-bold text-slate-800">{s.name}</span>
               <div className="flex items-center space-x-3">
                 <span className="text-[10px] text-slate-500 font-mono">{s.uptime} Uptime</span>
-                <Badge variant="success" size="sm">{s.status}</Badge>
+                <Badge variant="success">{s.status}</Badge>
               </div>
             </div>
           ))}
