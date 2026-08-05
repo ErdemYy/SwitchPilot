@@ -1,0 +1,31 @@
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.ExecutionStatus = exports.ExecutionMode = void 0;
+var ExecutionMode;
+(function (ExecutionMode) {
+    ExecutionMode["DRY_RUN"] = "DRY_RUN";
+    ExecutionMode["PREVIEW_ONLY"] = "PREVIEW_ONLY";
+    ExecutionMode["IMMEDIATE"] = "IMMEDIATE";
+    ExecutionMode["SCHEDULED"] = "SCHEDULED";
+    ExecutionMode["MAINTENANCE_WINDOW"] = "MAINTENANCE_WINDOW";
+    ExecutionMode["BULK_EXECUTION"] = "BULK_EXECUTION";
+    ExecutionMode["CANARY_DEPLOYMENT"] = "CANARY_DEPLOYMENT";
+    ExecutionMode["PHASED_ROLLOUT"] = "PHASED_ROLLOUT";
+    ExecutionMode["EMERGENCY"] = "EMERGENCY";
+    ExecutionMode["ROLLBACK"] = "ROLLBACK";
+})(ExecutionMode || (exports.ExecutionMode = ExecutionMode = {}));
+var ExecutionStatus;
+(function (ExecutionStatus) {
+    ExecutionStatus["QUEUED"] = "QUEUED";
+    ExecutionStatus["PREPARING"] = "PREPARING";
+    ExecutionStatus["WAITING_APPROVAL"] = "WAITING_APPROVAL";
+    ExecutionStatus["CONNECTING"] = "CONNECTING";
+    ExecutionStatus["AUTHENTICATING"] = "AUTHENTICATING";
+    ExecutionStatus["EXECUTING"] = "EXECUTING";
+    ExecutionStatus["VERIFYING"] = "VERIFYING";
+    ExecutionStatus["COMPLETED"] = "COMPLETED";
+    ExecutionStatus["FAILED"] = "FAILED";
+    ExecutionStatus["CANCELLED"] = "CANCELLED";
+    ExecutionStatus["ROLLING_BACK"] = "ROLLING_BACK";
+    ExecutionStatus["ROLLBACK_COMPLETED"] = "ROLLBACK_COMPLETED";
+})(ExecutionStatus || (exports.ExecutionStatus = ExecutionStatus = {}));

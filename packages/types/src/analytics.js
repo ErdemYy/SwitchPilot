@@ -1,0 +1,30 @@
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.ExportFormat = exports.ReportType = void 0;
+var ReportType;
+(function (ReportType) {
+    ReportType["EXECUTIVE_SUMMARY"] = "EXECUTIVE_SUMMARY";
+    ReportType["NETWORK_HEALTH"] = "NETWORK_HEALTH";
+    ReportType["DEVICE_INVENTORY"] = "DEVICE_INVENTORY";
+    ReportType["CONFIG_DRIFT"] = "CONFIG_DRIFT";
+    ReportType["COMPLIANCE"] = "COMPLIANCE";
+    ReportType["SECURITY"] = "SECURITY";
+    ReportType["FIRMWARE_LIFECYCLE"] = "FIRMWARE_LIFECYCLE";
+    ReportType["CAPACITY_PLANNING"] = "CAPACITY_PLANNING";
+    ReportType["AVAILABILITY"] = "AVAILABILITY";
+    ReportType["PERFORMANCE"] = "PERFORMANCE";
+    ReportType["AUTOMATION_ACTIVITY"] = "AUTOMATION_ACTIVITY";
+    ReportType["EXECUTION_SUCCESS_RATE"] = "EXECUTION_SUCCESS_RATE";
+    ReportType["ROLLBACK_STATISTICS"] = "ROLLBACK_STATISTICS";
+    ReportType["ALERT_STATISTICS"] = "ALERT_STATISTICS";
+    ReportType["AI_USAGE"] = "AI_USAGE";
+    ReportType["LICENSE_USAGE"] = "LICENSE_USAGE";
+    ReportType["AUDIT_REPORTS"] = "AUDIT_REPORTS";
+})(ReportType || (exports.ReportType = ReportType = {}));
+var ExportFormat;
+(function (ExportFormat) {
+    ExportFormat["PDF"] = "PDF";
+    ExportFormat["EXCEL"] = "EXCEL";
+    ExportFormat["CSV"] = "CSV";
+    ExportFormat["JSON"] = "JSON";
+})(ExportFormat || (exports.ExportFormat = ExportFormat = {}));

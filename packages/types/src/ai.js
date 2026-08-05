@@ -1,0 +1,26 @@
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.AiIntentCategory = void 0;
+var AiIntentCategory;
+(function (AiIntentCategory) {
+    AiIntentCategory["NATURAL_LANGUAGE_CONFIG"] = "NATURAL_LANGUAGE_CONFIG";
+    AiIntentCategory["CONFIG_EXPLANATION"] = "CONFIG_EXPLANATION";
+    AiIntentCategory["CONFIG_REVIEW"] = "CONFIG_REVIEW";
+    AiIntentCategory["RISK_ADVISOR"] = "RISK_ADVISOR";
+    AiIntentCategory["BEST_PRACTICE_ADVISOR"] = "BEST_PRACTICE_ADVISOR";
+    AiIntentCategory["COMPLIANCE_ADVISOR"] = "COMPLIANCE_ADVISOR";
+    AiIntentCategory["MIGRATION_ASSISTANT"] = "MIGRATION_ASSISTANT";
+    AiIntentCategory["VENDOR_TRANSLATION_ASSISTANT"] = "VENDOR_TRANSLATION_ASSISTANT";
+    AiIntentCategory["TROUBLESHOOTING_ASSISTANT"] = "TROUBLESHOOTING_ASSISTANT";
+    AiIntentCategory["ROOT_CAUSE_ANALYSIS"] = "ROOT_CAUSE_ANALYSIS";
+    AiIntentCategory["FIRMWARE_RECOMMENDATION"] = "FIRMWARE_RECOMMENDATION";
+    AiIntentCategory["INTERFACE_ANALYZER"] = "INTERFACE_ANALYZER";
+    AiIntentCategory["VLAN_ADVISOR"] = "VLAN_ADVISOR";
+    AiIntentCategory["ACL_ADVISOR"] = "ACL_ADVISOR";
+    AiIntentCategory["QOS_ADVISOR"] = "QOS_ADVISOR";
+    AiIntentCategory["STP_ADVISOR"] = "STP_ADVISOR";
+    AiIntentCategory["ROUTING_ADVISOR"] = "ROUTING_ADVISOR";
+    AiIntentCategory["SECURITY_ADVISOR"] = "SECURITY_ADVISOR";
+    AiIntentCategory["TOPOLOGY_EXPLANATION"] = "TOPOLOGY_EXPLANATION";
+    AiIntentCategory["CHANGE_IMPACT_PREDICTION"] = "CHANGE_IMPACT_PREDICTION";
+})(AiIntentCategory || (exports.AiIntentCategory = AiIntentCategory = {}));

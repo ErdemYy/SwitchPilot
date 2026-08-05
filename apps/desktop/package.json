@@ -12,11 +12,14 @@
     "package:linux": "electron-builder --linux AppImage deb rpm"
   },
   "dependencies": {
+    "@switchpilot/types": "workspace:*",
     "better-sqlite3": "^11.0.0",
     "electron-updater": "^6.3.0",
     "keytar": "^7.9.0"
   },
   "devDependencies": {
+    "@switchpilot/config": "workspace:*",
+    "@types/better-sqlite3": "^7.6.11",
     "electron": "^31.0.0",
     "electron-builder": "^24.13.0",
     "typescript": "^5.4.5"

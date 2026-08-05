@@ -29,6 +29,9 @@ importers:
 
   apps/desktop:
     dependencies:
+      '@switchpilot/types':
+        specifier: workspace:*
+        version: link:../../packages/types
       better-sqlite3:
         specifier: ^11.0.0
         version: 11.10.0
@@ -39,6 +42,12 @@ importers:
         specifier: ^7.9.0
         version: 7.9.0
     devDependencies:
+      '@switchpilot/config':
+        specifier: workspace:*
+        version: link:../../packages/config
+      '@types/better-sqlite3':
+        specifier: ^7.6.11
+        version: 7.6.13
       electron:
         specifier: ^31.0.0
         version: 31.7.7
@@ -768,6 +777,9 @@ packages:
   '@tootallnate/once@2.0.1':
     resolution: {integrity: sha512-HqmEUIGRJ5fSXchkVgR5F7qn48bDBzv0kWj/Kfu5e6uci4UlEeng4331LnBkWffb++Ei3FOVLxo8JJWMFBDMeQ==}
     engines: {node: '>= 10'}
+
+  '@types/better-sqlite3@7.6.13':
+    resolution: {integrity: sha512-NMv9ASNARoKksWtsq/SHakpYAYnhBrQgGD8zkLYk/jaK8jUGn08CfEdTRgYhMypUQAfzSP8W6gNLe0q19/t4VA==}
 
   '@types/cacheable-request@6.0.3':
     resolution: {integrity: sha512-IQ3EbTzGxIigb1I3qPZc1rWJnH0BmSKv5QYTalEwweFvyBDLSAe24zP0le/hyi7ecGfZVlIVAg4BZqb8WBwKqw==}
@@ -3314,6 +3326,10 @@ snapshots:
       defer-to-connect: 2.0.1
 
   '@tootallnate/once@2.0.1': {}
+
+  '@types/better-sqlite3@7.6.13':
+    dependencies:
+      '@types/node': 20.19.43
 
   '@types/cacheable-request@6.0.3':
     dependencies:

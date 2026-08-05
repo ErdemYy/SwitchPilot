@@ -1,5 +1,4 @@
 import Database from 'better-sqlite3';
-import * as path from 'path';
 
 export class LocalEncryptedDatabase {
   private db: any;
@@ -42,9 +41,10 @@ export class LocalEncryptedDatabase {
     return this.db.prepare('SELECT * FROM offline_devices').all();
   }
 
-  public queueOfflineChange(id: string, deviceId: string, ccmPayload: string, checksum: string) {
-    return this.db.prepare(
+  public queueOfflineChangeRequest(id: string, deviceId: string, ccmPayload: string, checksum: string) {
+    const stmt = this.db.prepare(
       'INSERT INTO queued_change_requests (id, device_id, ccm_payload, checksum) VALUES (?, ?, ?, ?)'
-    ).run(id, deviceId, ccmPayload, checksum);
+    );
+    return stmt.run(id, deviceId, ccmPayload, checksum);
   }
 }
