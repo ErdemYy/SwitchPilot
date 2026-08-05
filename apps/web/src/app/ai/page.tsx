@@ -111,6 +111,8 @@ export default function AiWorkspacePage() {
 
         {/* Right Column: Generated CCM, Live Translation & Risk Panel */}
         <div className="lg:col-span-7 space-y-4">
+          {hasResponse && (
+            <>
           {/* Generated CCM Viewer */}
           <Card title="Generated Canonical Configuration Model (CCM) - Zero Raw CLI">
             <div className="relative">
@@ -166,6 +168,8 @@ interface Gi1/0/10
               </div>
             </div>
           </Card>
+            </>
+          )}
         </div>
       </div>
     </AppShell>
