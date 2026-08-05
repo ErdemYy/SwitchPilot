@@ -2,7 +2,7 @@
 
 import React, { useState } from 'react';
 import { AppShell } from '../../layouts/AppShell';
-import { Card, Button, Badge } from '@switchpilot/ui';
+import { Card, Button } from '@switchpilot/ui';
 
 export default function AutomationStudioPage() {
   const [selectedTemplate, setSelectedTemplate] = useState<string>('CREATE_VLAN');
